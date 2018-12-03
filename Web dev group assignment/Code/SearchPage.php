@@ -6,13 +6,13 @@
 		$q = $connection ->real_escape_string($_POST['q']);
 	$column = $connection->real_escape_string($_POST['column']);
 	
-	if ($column == "" || ($column != "publishname" && $column != "title" && $column != "author"))
-		$column = "publishname";
+	if ($column == "" || ($column != "publishYear" && $column != "title" && $column != "author"))
+		$column = "publishYear";
 	
-	$sql = $connection->query("SELECT publishname FROM books WHERE $column LIKE '%$q%'");
+	$sql = $connection->query("SELECT * FROM `books` WHERE CONCAT(`PublishYear`, `Title`, `Author')LIKE '%".$q."%'";
 	if ($sql->num_rows > 0){
 		while ($data = $sql->fetch_array())
-			echo $data['publishname'] . "<br>";
+			echo $data['publishYear'] . "<br>";
 		
 	}else
 		echo "Your search doesn't match!";
@@ -53,7 +53,7 @@
 			<input type="text" name ="q" placeholder="Search Books..">
 			<select name="column">
 				<option value="">Select Filter</option>
-				<option value="publishname">Publish Name</option>
+				<option value="publishYear">Publish Year</option>
 				<option value="title">Title</option>
 				<option value="author">Author</option>
 			</select>
