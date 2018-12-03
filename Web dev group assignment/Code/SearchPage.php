@@ -10,7 +10,8 @@
 		$column = "publishYear";
 	
 	$mysqli = $connection->query("SELECT * FROM `books` WHERE CONCAT(`PublishYear`, `Title`, `Author')LIKE '%".$q."%'");
-	if (mysqli_num_rows > 0){
+	$num_rows = mysqli_num_rows($result);
+	if ($sql->num_rows > 0){
 		while ($data = $mysqli->fetch_array())
 			echo $data['publishYear'] . "<br>";
 		
