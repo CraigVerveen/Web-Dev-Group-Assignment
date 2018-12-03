@@ -1,43 +1,50 @@
-
-<!-- Search a database of books using PHP-->
 <?php
-	if (isset($_POST['submit'])) {
-		$connection = new mysqli("localhost","root", "","mydb2");
-		$q = $connection ->real_escape_string($_POST['q']);
-	$column = $connection->real_escape_string($_POST['column']);
-	
-	if ($column == "" || ($column != "publishYear" && $column != "title" && $column != "author"))
-		$column = "publishYear";
-	
-	$mysqli = $connection->query("SELECT * FROM `books` WHERE CONCAT(`PublishYear`, `Title`, `Author')LIKE '%".$q."%'");
-	$num_rows = mysqli_num_rows($result);
-	if ($sql->num_rows > 0){
-		while ($data = $mysqli->fetch_array())
-			echo $data['publishYear'] . "<br>";
-		
-	}else
-		echo "Your search doesn't match!";
-	}
-		
+
+if(isset($_POST['search']))
+{
+    $valueToSearch = $_POST['valueToSearch'];// search in all table columns
+    $query = "SELECT * FROM `books` WHERE CONCAT(`PublishYear`, `Title`, `Author`) LIKE '%".$valueToSearch."%'";// using concat mysql function
+    $search_result = filterTable($query);
+    
+}
+ else {
+    $query = "SELECT * FROM `books`";
+    $search_result = filterTable($query);
+}
+
+function filterTable($query)// function to connect and execute the query
+{
+    $connect = mysqli_connect("localhost", "root", "", "mydb2");
+    $filter_Result = mysqli_query($connect, $query);
+    return $filter_Result;
+}
 
 ?>
+
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="../CSS/stylesheet.css">
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"><!--used to format the datepicker-->
 		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<title>The Library</title>
+		
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="CSS/stylesheet.css">
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	</head>
 	
 	<body>
-		<script src="../Scripts/site.js"></script>
 		<div id="main">
 			<header>
-				<img src="../Images/library.jpg" alt="library"/>
+				<img src="Images/library.jpg" alt="library"/>
 			</header>
 			
 			<nav>
@@ -49,22 +56,34 @@
 					<li><a href="ProfilePage.php">Your profile</a></li>
 				</ul>
 			</nav>
-		
-		<form method="post" action="SearchPage.php">
-			<input type="text" name ="q" placeholder="Search Books..">
-			<select name="column">
-				<option value="">Select Filter</option>
-				<option value="publishYear">Publish Year</option>
-				<option value="title">Title</option>
-				<option value="author">Author</option>
-			</select>
-			<input type ="submit" name="submit" value="Find">
-		</form>
-			
-			<footer>
-				Site by: Jennifer Nolan &copy; 2018
-			</footer>
-		</div>
-	</body>
-</html>
+    <head>
+	<div id="content">
+				<section class="contentSection">
+        <title>Book Search</title>
 
+    </head>
+        
+        <form action="SearchPage.php" method="post">
+            <input type="text" name="valueToSearch" placeholder="Search Books..."><br><br>
+            <input type="submit" name="search" value="Filter"><br><br>
+            
+            <table>
+                <tr>
+                    <th>Publish Year</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                </tr>
+
+				<!-- populate table from mysql database -->
+                <?php while($row = mysqli_fetch_array($search_result)):?>
+                <tr>
+                    <td><?php echo $row['PublishYear'];?></td>
+                    <td><?php echo $row['Title'];?></td>
+                    <td><?php echo $row['Author'];?></td>
+                </tr>
+                <?php endwhile;?>
+            </table>
+        </form>
+        
+    </body>
+</html>
