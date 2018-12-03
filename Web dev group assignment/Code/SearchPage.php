@@ -9,9 +9,9 @@
 	if ($column == "" || ($column != "publishYear" && $column != "title" && $column != "author"))
 		$column = "publishYear";
 	
-	$sql = $connection->query("SELECT * FROM `books` WHERE CONCAT(`PublishYear`, `Title`, `Author')LIKE '%".$q."%'");
-	if ($sql->num_rows > 0){
-		while ($data = $sql->fetch_array())
+	$mysqli = $connection->query("SELECT * FROM `books` WHERE CONCAT(`PublishYear`, `Title`, `Author')LIKE '%".$q."%'");
+	if ($mysqli->num_rows > 0){
+		while ($data = $mysqli->fetch_array())
 			echo $data['publishYear'] . "<br>";
 		
 	}else
