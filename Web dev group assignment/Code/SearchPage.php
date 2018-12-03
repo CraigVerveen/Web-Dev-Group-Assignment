@@ -9,10 +9,8 @@
 	if ($column == "" || ($column != "publishYear" && $column != "title" && $column != "author"))
 		$column = "publishYear";
 	
-	$sql = $connection->query("SELECT * FROM `books` WHERE CONCAT(`PublishYear`, `Title`, `Author')LIKE '%".$q."%'");
-	if ($sql->num_rows > 0){
-		while ($data = $sql->fetch_array())
-			echo $data['publishYear'] . "<br>";
+	$data = $connection->query("SELECT * FROM `books` WHERE CONCAT(`PublishYear`, `Title`, `Author')LIKE '%".$q."%'");
+	if ($data->num_rows > 0){
 		
 	}else
 		echo "Your search doesn't match!";
